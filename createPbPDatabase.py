@@ -8,7 +8,7 @@ cursor.execute("""
         CREATE TABLE masternhlpbp(
         event_index integer,
         season text,
-        game_id text PRIMARY KEY,
+        game_id text,
         game_date date,
         session text,
         game_period integer,
@@ -67,6 +67,7 @@ cursor.execute("""
         run_away_xg real,
         run_home_5v5_xg real,
         run_away_5v5_xg real)
+
 """
 )
 
