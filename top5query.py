@@ -43,7 +43,7 @@ def main():
     print(top5_query)
     cur.execute(top5_query)
     rows = cur.fetchall()
-    write_top5(top5, rows, date)
+    write_top5(top5, rows, sql_date)
 
 if __name__ == '__main__':
     main()
