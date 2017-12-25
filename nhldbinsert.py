@@ -25,6 +25,9 @@ def main():
     daily_pbp = sys.argv[1]
     pbp_df = pd.read_csv(daily_pbp, sep = '|')
 
+    print(daily_pbp)
+    print(type(daily_pbp))
+
     #create postgresql connection
     conn = psycopg2.connect("host=localhost dbname=nhl user=matt")
     cur = conn.cursor()
