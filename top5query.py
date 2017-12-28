@@ -21,7 +21,7 @@ def main():
     This function takes in a text file and writes the results of an sql query
     to it.
 
-    inputs:
+    Inputs:
     sys.argv[1] - text file that holds the top 5 ixG performers from yesterday
     for keylesstwitterpost.py script to read in and post
 

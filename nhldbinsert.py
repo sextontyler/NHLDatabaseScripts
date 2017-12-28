@@ -21,7 +21,6 @@ def clean_pbp(df):
 
     return df
 
-
 def games_played_check(file_name):
     '''
     Function checks the pbp text file in sys args to see if there is actually
@@ -34,7 +33,8 @@ def games_played_check(file_name):
     boolean - True or False whether string is present in file indicating if
     games were played
     '''
-    with open(file_name, 'r') as f:
+    games_text = []
+    with open(file_name, 'r', encoding = "utf-8") as f:
         first_line = str(next(f)).strip()
         if first_line == 'No games today':
             return False
@@ -62,7 +62,7 @@ def sql_insert(file_name, cursor, connect):
     cleaned_pbp_df = clean_pbp(pbp_df)
     cleaned_pbp_df.to_csv(file_name, sep = '|', index = False)
 
-    with open(file_name, 'r') as f:
+    with open(file_name, 'r', encoding = "utf-8") as f:
         # Skip the header row.
         next(f)
         cursor.copy_from(f, 'masternhlpbp', sep='|')
@@ -85,7 +85,7 @@ def main():
     daily_pbp = sys.argv[1]
 
     #create postgresql connection
-    conn = psycopg2.connect("host=localhost dbname=nhl user=matt")
+    conn = psycopg2.connect("host=localhost dbname=test user=matt")
     cur = conn.cursor()
 
 
@@ -93,6 +93,7 @@ def main():
         #perform sql insert
         sql_insert(daily_pbp, cur, conn)
         conn.commit()
+        print("Yesterday's games inserted")
     else:
         print("No games today")
         return None
