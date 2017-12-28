@@ -57,9 +57,6 @@ def sql_insert(file_name, cursor, connect):
     #opens nhl pbp csv for importing
     pbp_df = pd.read_csv(file_name, sep = '|')
 
-    print(file_name)
-    print(type(file_name))
-
     #clean NA's from integer columns and writes to | delim file for
     #sql insert
     cleaned_pbp_df = clean_pbp(pbp_df)
@@ -88,7 +85,7 @@ def main():
     daily_pbp = sys.argv[1]
 
     #create postgresql connection
-    conn = psycopg2.connect("host=localhost dbname=test user=matt")
+    conn = psycopg2.connect("host=localhost dbname=nhl user=matt")
     cur = conn.cursor()
 
 

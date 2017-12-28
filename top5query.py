@@ -15,7 +15,7 @@ def write_top5(top5_file, sql_query, date):
     with open(top5_file, 'w+') as top5:
         top5.write('{} ixG Leaders:\n'.format(date))
         for row in sql_query:
-            top5.write('{}\n'.format(str(row)))
+            top5.write('{}\n'.format(str(row).replace('(', '').replace(',', ' ').replace(')', '').replace("'", '')))
 def main():
     '''
     This function takes in a text file and writes the results of an sql query
