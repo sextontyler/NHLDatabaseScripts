@@ -85,7 +85,7 @@ def main():
     daily_pbp = sys.argv[1]
 
     #create postgresql connection
-    conn = psycopg2.connect("host=localhost dbname=test user=matt")
+    conn = psycopg2.connect("host=localhost dbname=nhl user=matt")
     cur = conn.cursor()
 
 
