@@ -1,6 +1,7 @@
-import psycopg2
+import os
 import pandas as pd
 import sys
+import psycopg2
 
 def clean_pbp(df):
     '''
@@ -13,34 +14,21 @@ def clean_pbp(df):
     Outputs:
     df - cleaned pandas dataframe
     '''
+    df = df[df['session']!='session']
     col_names = ['coords_x', 'coords_y', 'is_home', 'time_diff', 'shot_angle',
-            'distance', 'event_length', 'game_seconds']
+            'distance', 'event_length', 'game_seconds', 'event_index',
+            'game_period', 'home_corsi', 'away_corsi', 'home_corsi_total',
+            'away_corsi_total', 'is_rebound', 'is_rush']
 
     for column in col_names:
         df[column] = df[column].fillna(0).astype(int)
 
+    '''
+    df['event_index'] = df['event_index'].astype(int)
+    df['game_period'] = df['game_period'].astype(int)
+    df['home_corsi'] = df['home_corsi'].astype(int)
+    '''
     return df
-
-def games_played_check(file_name):
-    '''
-    Function checks the pbp text file in sys args to see if there is actually
-    data to input into the SQL database
-
-    Inputs:
-    file_name - string of file path for data
-
-    Ouputs:
-    boolean - True or False whether string is present in file indicating if
-    games were played
-    '''
-    games_text = []
-    with open(file_name, 'r', encoding = "utf-8") as f:
-        with open(file_name, 'r') as f:
-        first_line = str(next(f)).strip()
-        if first_line == 'No games today':
-            return False
-        else:
-            return True
 
 def sql_insert(file_name, cursor, connect):
     '''
@@ -71,33 +59,34 @@ def sql_insert(file_name, cursor, connect):
 
 def main():
     '''
-    This script takes the output of my daily R NHL scraping script and cleans
-    it and inserts into the masternhlpbp db on the Postgres server.  If there
-    were no games played it simply returns none and ceases execution
-
     Inputs:
-    sys.argv[1] - the daily NHL PbP output from the R scraper
+    sys.argv[1] - parent directory where folders are located to walk through
+    and compile pbp data into one delim file
+
+    sys.argv[2] - file that will be written to by the script
 
     Outputs:
-    None
+    sys.argv[2] - complete pbp file of all NHL games so far in the season
+    compiled into a '|' delmited file
     '''
+    walk_directory = sys.argv[1]
+    comp_pbp_file = sys.argv[2]
 
     #read in pbp file into a pandas dataframe
-    daily_pbp = sys.argv[1]
 
     #create postgresql connection
     conn = psycopg2.connect("host=localhost dbname=nhl user=matt")
     cur = conn.cursor()
+    with open(comp_pbp_file, 'w') as pbp_file:
+        for path, subdir, files in os.walk(walk_directory):
+            for dirs in subdir:
+                pbp = open('{}{}/{}.csv'.format(path, dirs, dirs), 'r')
+                data = pbp.read()
+                pbp.close()
+                pbp_file.write(data)
+    sql_insert(comp_pbp_file, cur, conn)
 
 
-    if games_played_check(daily_pbp):
-        #perform sql insert
-        sql_insert(daily_pbp, cur, conn)
-        conn.commit()
-        print("Yesterday's games inserted")
-    else:
-        print("No games today")
-        return None
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
