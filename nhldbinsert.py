@@ -35,7 +35,6 @@ def games_played_check(file_name):
     '''
     games_text = []
     with open(file_name, 'r', encoding = "utf-8") as f:
-        with open(file_name, 'r') as f:
         first_line = str(next(f)).strip()
         if first_line == 'No games today':
             return False

@@ -15,13 +15,13 @@ def clean_pbp(df):
     df - cleaned pandas dataframe
     '''
     df = df[df['session']!='session']
-    col_names = ['coords_x', 'coords_y', 'is_home', 'time_diff', 'shot_angle',
-            'distance', 'event_length', 'game_seconds', 'event_index',
+    col_names = ['coords_x', 'coords_y', 'is_home', 'time_diff',
+             'event_length', 'game_seconds', 'event_index',
             'game_period', 'home_corsi', 'away_corsi', 'home_corsi_total',
             'away_corsi_total', 'is_rebound', 'is_rush']
 
     for column in col_names:
-        df[column] = df[column].fillna(0).astype(int)
+        df.loc[:,column].fillna(0).astype(int)
 
     '''
     df['event_index'] = df['event_index'].astype(int)
@@ -44,18 +44,20 @@ def sql_insert(file_name, cursor, connect):
     '''
 
     #opens nhl pbp csv for importing
-    pbp_df = pd.read_csv(file_name, sep = '|')
+    pbp_df = pd.read_csv(file_name, sep = ',')
 
     #clean NA's from integer columns and writes to | delim file for
     #sql insert
     cleaned_pbp_df = clean_pbp(pbp_df)
     cleaned_pbp_df.to_csv(file_name, sep = '|', index = False)
 
+    '''
     with open(file_name, 'r', encoding = "utf-8") as f:
         # Skip the header row.
         next(f)
         cursor.copy_from(f, 'masternhlpbp', sep='|')
     connect.commit()
+    '''
 
 def main():
     '''
@@ -72,19 +74,27 @@ def main():
     walk_directory = sys.argv[1]
     comp_pbp_file = sys.argv[2]
 
+    print(walk_directory)
+    print(comp_pbp_file)
     #read in pbp file into a pandas dataframe
 
     #create postgresql connection
     conn = psycopg2.connect("host=localhost dbname=nhl user=matt")
     cur = conn.cursor()
     with open(comp_pbp_file, 'w') as pbp_file:
+        x = 0
         for path, subdir, files in os.walk(walk_directory):
             for dirs in subdir:
-                pbp = open('{}{}/{}.csv'.format(path, dirs, dirs), 'r')
-                data = pbp.read()
-                pbp.close()
-                pbp_file.write(data)
-    sql_insert(comp_pbp_file, cur, conn)
+                try:
+                    with open('{}/{}/{}.csv'.format(path, dirs, dirs), 'r') as pbp:
+                        header = next(pbp)
+                        if x == 0:
+                            pbp_file.write(header)
+                        pbp_file.writelines(pbp.readlines()[1:])
+                except:
+                    pass
+                x += 1
+        sql_insert(comp_pbp_file, cur, conn)
 
 
 
