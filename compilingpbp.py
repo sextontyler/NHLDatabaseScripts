@@ -21,7 +21,7 @@ def clean_pbp(df):
             'away_corsi_total', 'is_rebound', 'is_rush']
 
     for column in col_names:
-        df.loc[:,column].fillna(0).astype(int)
+        df[column] = df[column].fillna(0).astype(int)
 
     '''
     df['event_index'] = df['event_index'].astype(int)
@@ -30,34 +30,26 @@ def clean_pbp(df):
     '''
     return df
 
-def sql_insert(file_name, cursor, connect):
-    '''
-    Function takes cleaned data and inserts it into the Postgres SQL database
+def stats_compile(cursor, connect, database, directory):
+    for path, subdir, files in os.walk(directory):
+        for dirs in subdir:
+            try:
+                if database == 'masternhlpbp':
+                    with open('{}/{}/{}'.format(path, dirs, dirs), 'r', encoding = "utf-8") as pbp:
+                        #pbp_df = pd.read_csv(file_name, sep = '|')
+                        #cleaned_pbp_df = clean_pbp(pbp_df)
+                        #cleaned_pbp_df.to_csv(file_name, sep = '|')
+                        sql = "COPY {} FROM stdin WITH DELIMITER '|' CSV HEADER".format(database)
+                        cursor.copy_expert(sql, pbp)
+                        connect.commit()
+                else:
+                    with open('{}/{}/{} {}'.format(path, dirs, dirs, database), 'r', encoding = "utf-8") as pbp:
+                        sql = "COPY {} FROM stdin WITH DELIMITER '|' CSV HEADER".format(database)
+                        cursor.copy_expert(sql, pbp)
+                        connect.commit()
 
-    Inputs:
-    file_name - (string) file path of | delimited data
-    cursor    - (object) Postgres connection cursor
-    connect   - (object) Postgres connection
-
-    Outputs:
-    None
-    '''
-
-    #opens nhl pbp csv for importing
-    pbp_df = pd.read_csv(file_name, sep = ',')
-
-    #clean NA's from integer columns and writes to | delim file for
-    #sql insert
-    cleaned_pbp_df = clean_pbp(pbp_df)
-    cleaned_pbp_df.to_csv(file_name, sep = '|', index = False)
-
-    '''
-    with open(file_name, 'r', encoding = "utf-8") as f:
-        # Skip the header row.
-        next(f)
-        cursor.copy_from(f, 'masternhlpbp', sep='|')
-    connect.commit()
-    '''
+            except:
+                pass
 
 def main():
     '''
@@ -65,37 +57,22 @@ def main():
     sys.argv[1] - parent directory where folders are located to walk through
     and compile pbp data into one delim file
 
-    sys.argv[2] - file that will be written to by the script
-
     Outputs:
-    sys.argv[2] - complete pbp file of all NHL games so far in the season
-    compiled into a '|' delmited file
+    None
     '''
     walk_directory = sys.argv[1]
-    comp_pbp_file = sys.argv[2]
-
-    print(walk_directory)
-    print(comp_pbp_file)
-    #read in pbp file into a pandas dataframe
+    files_directory = sys.argv[2]
 
     #create postgresql connection
     conn = psycopg2.connect("host=localhost dbname=nhl user=matt")
     cur = conn.cursor()
-    with open(comp_pbp_file, 'w') as pbp_file:
-        x = 0
-        for path, subdir, files in os.walk(walk_directory):
-            for dirs in subdir:
-                try:
-                    with open('{}/{}/{}.csv'.format(path, dirs, dirs), 'r') as pbp:
-                        header = next(pbp)
-                        if x == 0:
-                            pbp_file.write(header)
-                        pbp_file.writelines(pbp.readlines()[1:])
-                except:
-                    pass
-                x += 1
-        sql_insert(comp_pbp_file, cur, conn)
 
+    tables = ['playerstats', 'teamstats', 'playerstats5v5',
+            'teamstats5v5', 'playerstatsadj', 'teamstatsadj', 'playerstatsadj5v5',
+            'teamstatsadj5v5']
+
+    for table in tables:
+        stats_compile(cur, conn, table, walk_directory)
 
 
 if __name__ == '__main__':
