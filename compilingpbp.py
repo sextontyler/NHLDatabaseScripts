@@ -30,7 +30,32 @@ def clean_pbp(df):
     '''
     return df
 
-def stats_compile(cursor, connect, database, directory):
+def stats_compile(file_name, walk_directory, database):
+    with open(file_name, 'w') as master_stats_file:
+        x = 0
+        for path, subdir, files in os.walk(walk_directory):
+            for dirs in subdir:
+                try:
+                    if database == 'masternhlpbp':
+                        with open('{}/{}/{}'.format(path, dirs, dirs), 'r',\
+                                encoding = "utf-8") as game_stats:
+                            header = next(game_stats)
+                            if x == 0:
+                                master_stats_file.write(header)
+                            master_stats_file.writelines(game_stats.readlines())
+                    else:
+                        with open('{}/{}/{} {}'.format(path, dirs, dirs, database),\
+                                'r', encoding = "utf-8") as game_stats:
+                            header = next(game_stats)
+                            if x == 0:
+                                master_stats_file.write(header)
+                            master_stats_file.writelines(game_stats.readlines())
+                except:
+                    pass
+                x += 1
+        print('{} master file written'.format(database))
+
+def stats_sql_insert(cursor, connect, database, directory):
     for path, subdir, files in os.walk(directory):
         for dirs in subdir:
             try:
@@ -58,7 +83,8 @@ def main():
     and compile pbp data into one delim file
 
     Outputs:
-    None
+    Stats files - total compiled stats in a text file for all the tables in the
+    sql database for that season
     '''
     walk_directory = sys.argv[1]
     files_directory = sys.argv[2]
@@ -67,12 +93,14 @@ def main():
     conn = psycopg2.connect("host=localhost dbname=nhl user=matt")
     cur = conn.cursor()
 
-    tables = ['playerstats', 'teamstats', 'playerstats5v5',
+    tables = ['masternhlpbp','playerstats', 'teamstats', 'playerstats5v5',
             'teamstats5v5', 'playerstatsadj', 'teamstatsadj', 'playerstatsadj5v5',
             'teamstatsadj5v5']
 
     for table in tables:
-        stats_compile(cur, conn, table, walk_directory)
+        #stats_sql_insert(cur, conn, table, walk_directory)
+        stats_compile('{}{}'.format(files_directory, table), walk_directory, table)
+
 
 
 if __name__ == '__main__':
