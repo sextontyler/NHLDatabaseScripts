@@ -11,7 +11,7 @@ def drop_tables(cursor, connection):
     None
     '''
     #List of tables in the NHL database
-    tables = ['playerstats', 'teamstats', 'playerstats5v5',
+    tables = ['masternhlpbp', 'playerstats', 'teamstats', 'playerstats5v5',
             'teamstats5v5', 'playerstatsadj', 'teamstatsadj', 'playerstatsadj5v5',
             'teamstatsadj5v5']
 
@@ -37,7 +37,6 @@ def create_tables(cursor, connection):
     None
     '''
 
-    '''
     cursor.execute("""
             CREATE TABLE masternhlpbp(
             event_index integer,
@@ -117,7 +116,6 @@ def create_tables(cursor, connection):
 
     """
     )
-    '''
 
     cursor.execute("""
     CREATE TABLE teamstats5v5(

@@ -3,7 +3,7 @@ import pandas as pd
 import sys
 import psycopg2
 
-def clean_pbp(df):
+def clean_pbp(walk_directory):
     '''
     Function takes in a dataframe and turns NA to integer 0 to fit with SQL
     database schema
@@ -14,21 +14,32 @@ def clean_pbp(df):
     Outputs:
     df - cleaned pandas dataframe
     '''
-    df = df[df['session']!='session']
-    col_names = ['coords_x', 'coords_y', 'is_home', 'time_diff',
-             'event_length', 'game_seconds', 'event_index',
-            'game_period', 'home_corsi', 'away_corsi', 'home_corsi_total',
-            'away_corsi_total', 'is_rebound', 'is_rush']
 
-    for column in col_names:
-        df[column] = df[column].fillna(0).astype(int)
+    def clean(df):
 
-    '''
-    df['event_index'] = df['event_index'].astype(int)
-    df['game_period'] = df['game_period'].astype(int)
-    df['home_corsi'] = df['home_corsi'].astype(int)
-    '''
-    return df
+        col_names = ['coords_x', 'coords_y', 'is_home', 'time_diff', 'shot_angle',
+                'distance', 'event_length', 'game_seconds']
+
+        for column in col_names:
+            df[column] = df[column].fillna(0).astype(int)
+
+        return df
+
+    for path, subdir, files in os.walk(walk_directory):
+        for dirs in subdir:
+            try:
+
+                #opens nhl pbp csv for importing
+                pbp_df = pd.read_csv('{}/{}/{}'.format(path, dirs, dirs), sep = '|')
+
+                #clean NA's from integer columns and writes to | delim file for
+                cleaned_df = clean(pbp_df)
+
+                cleaned_df.to_csv('{}/{}/{}'.format(path, dirs, dirs), sep = '|', index = False)
+
+            except:
+                print(sys.exc_info())
+
 
 def stats_compile(file_name, walk_directory, database):
     with open(file_name, 'w') as master_stats_file:
@@ -74,7 +85,8 @@ def stats_sql_insert(cursor, connect, database, directory):
                         connect.commit()
 
             except:
-                pass
+                print(sys.exc_info())
+                print('{} failed to insert'.format(dirs))
 
 def main():
     '''
@@ -97,8 +109,9 @@ def main():
             'teamstats5v5', 'playerstatsadj', 'teamstatsadj', 'playerstatsadj5v5',
             'teamstatsadj5v5']
 
+    clean_pbp(walk_directory)
     for table in tables:
-        #stats_sql_insert(cur, conn, table, walk_directory)
+        stats_sql_insert(cur, conn, table, walk_directory)
         stats_compile('{}{}'.format(files_directory, table), walk_directory, table)
 
 
