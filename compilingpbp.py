@@ -38,7 +38,7 @@ def clean_pbp(walk_directory):
                 cleaned_df.to_csv('{}/{}/{}'.format(path, dirs, dirs), sep = '|', index = False)
 
             except:
-                print(sys.exc_info())
+                print('{}/{}/{} file not found'.format(path, dirs, dirs))
 
 
 def stats_compile(file_name, walk_directory, database):
@@ -85,7 +85,6 @@ def stats_sql_insert(cursor, connect, database, directory):
                         connect.commit()
 
             except:
-                print(sys.exc_info())
                 print('{} failed to insert'.format(dirs))
 
 def main():
