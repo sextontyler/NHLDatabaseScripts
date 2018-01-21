@@ -15,7 +15,9 @@ def write_top5(top5_file, sql_query, date):
     with open(top5_file, 'w+') as top5:
         top5.write('{} ixG Leaders:\n'.format(date))
         for row in sql_query:
-            top5.write('{}\n'.format(str(row).replace('(', '').replace(',', '').replace(')', '').replace("'", '')))
+            top5.write('{}\n'.format(str(row).replace('(', '')\
+                    .replace(',', '').replace(')', '').replace("'", '')\
+                    .replace('Decimal', '')))
 def main():
     '''
     This function takes in a text file and writes the results of an sql query
@@ -41,7 +43,7 @@ def main():
     #opens connection to postgres db, executes query, and store query in a list
     conn = psycopg2.connect("host=localhost dbname=nhl user=matt")
     cur = conn.cursor()
-    top5_query = "SELECT event_player_1, event_team, sum(xg) AS ixG FROM\
+    top5_query = "SELECT event_player_1, event_team, ROUND(sum(xg)::numeric, 2) AS ixG FROM\
      masternhlpbp WHERE game_date = '{}' GROUP BY event_player_1, event_team\
      ORDER BY SUM(xg) DESC LIMIT 5;".format(sql_date)
     cur.execute(top5_query)
