@@ -144,7 +144,9 @@ def create_tables(cursor, connection):
         xGF_percent real,
         GF60 real,
         GA60 real,
-        is_home int
+        is_home int,
+        season text,
+        session text
         )
     """
     )
@@ -175,7 +177,9 @@ def create_tables(cursor, connection):
         xGF_percent real,
         GF60 real,
         GA60 real,
-        is_home int
+        is_home int,
+        season text,
+        session text
         )
     """
     )
@@ -206,7 +210,9 @@ def create_tables(cursor, connection):
         xGF_percent real,
         GF60 real,
         GA60 real,
-        is_home int
+        is_home int,
+        season text,
+        session text
         )
     """
     )
@@ -238,7 +244,9 @@ def create_tables(cursor, connection):
         xGF_percent real,
         GF60 real,
         GA60 real,
-        is_home int
+        is_home int,
+        season text,
+        session text
         )
     """
     )
@@ -279,7 +287,9 @@ def create_tables(cursor, connection):
         P60 real,
         ixG60 real,
         game_id text,
-        game_date date
+        game_date date,
+        season text,
+        session text
         )
     """
     )
@@ -319,7 +329,9 @@ def create_tables(cursor, connection):
         P60 real,
         ixG60 real,
         game_id text,
-        game_date date
+        game_date date,
+        season text,
+        session text
         )
     """
     )
@@ -359,7 +371,9 @@ def create_tables(cursor, connection):
         P60 real,
         ixG60 real,
         game_id text,
-        game_date date
+        game_date date,
+        season text,
+        session text
         )
     """
     )
@@ -399,7 +413,9 @@ def create_tables(cursor, connection):
         P60 real,
         ixG60 real,
         game_id text,
-        game_date date
+        game_date date,
+        season text,
+        session text
         )
     """
     )
