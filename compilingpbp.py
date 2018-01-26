@@ -84,7 +84,8 @@ def stats_sql_insert(cursor, connect, database, directory):
                         cursor.copy_expert(sql, pbp)
                         connect.commit()
 
-            except:
+            except Exception as ex:
+                print(ex)
                 print('{} failed to insert'.format(dirs))
 
 def main():
