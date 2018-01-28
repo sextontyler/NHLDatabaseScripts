@@ -1,3 +1,4 @@
+from datetime import datetime
 import os
 import pandas as pd
 import sys
@@ -108,11 +109,15 @@ def main():
     tables = ['masternhlpbp','playerstats', 'teamstats', 'playerstats5v5',
             'teamstats5v5', 'playerstatsadj', 'teamstatsadj', 'playerstatsadj5v5',
             'teamstatsadj5v5']
-
-    clean_pbp(walk_directory)
-    for table in tables:
-        stats_sql_insert(cur, conn, table, walk_directory)
-        stats_compile('{}{}'.format(files_directory, table), walk_directory, table)
+    start = datetime.now()
+    seasons = ['2015', '2016', '2017', '2018']
+    for season in seasons:
+        clean_pbp('{}{}'.format(walk_directory, season))
+        for table in tables:
+            stats_sql_insert(cur, conn, table, '{}{}'.format(walk_directory, season))
+            stats_compile('{}{}/{}'.format(files_directory, season, table), walk_directory, table)
+    end = datetime.now()
+    print(end - start)
 
 
 
