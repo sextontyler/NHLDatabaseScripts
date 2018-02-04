@@ -19,7 +19,8 @@ def clean_pbp(walk_directory):
     def clean(df):
 
         col_names = ['coords_x', 'coords_y', 'is_home', 'time_diff', 'shot_angle',
-                'distance', 'event_length', 'game_seconds']
+                'distance', 'event_length', 'game_seconds', 'home_corsi', 'away_corsi',
+                'home_corsi_total', 'away_corsi_total']
 
         for column in col_names:
             df[column] = df[column].fillna(0).astype(int)
