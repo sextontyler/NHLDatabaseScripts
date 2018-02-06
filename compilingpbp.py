@@ -82,13 +82,20 @@ def stats_sql_insert(cursor, connect, database, directory):
         for dirs in subdir:
             try:
                 if database == 'masternhlpbp':
-                    with open('{}/{}/{}'.format(path, dirs, dirs), 'r', encoding="utf-8") as pbp:
-                        sql = "COPY {} FROM stdin WITH DELIMITER '|' CSV HEADER".format(database)
+                    with open('{}/{}/{}'
+                              .format(path, dirs, dirs), 'r',
+                              encoding="utf-8")\
+                            as pbp:
+                        sql = ('COPY {} FROM stdin WITH DELIMITER \'|\''
+                               'CSV HEADER'.format(database))
                         cursor.copy_expert(sql, pbp)
                         connect.commit()
                 else:
-                    with open('{}/{}/{} {}'.format(path, dirs, dirs, database), 'r', encoding="utf-8") as pbp:
-                        sql = "COPY {} FROM stdin WITH DELIMITER '|' CSV HEADER".format(database)
+                    with open('{}/{}/{} {}'.format(path, dirs, dirs, database),
+                              'r', encoding="utf-8")\
+                                      as pbp:
+                        sql = ('COPY {} FROM stdin WITH DELIMITER \'|\''
+                               'CSV HEADER'.format(database))
                         cursor.copy_expert(sql, pbp)
                         connect.commit()
 
