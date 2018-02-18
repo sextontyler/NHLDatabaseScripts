@@ -112,7 +112,11 @@ def create_tables(cursor, connection):
             run_home_xg real,
             run_away_xg real,
             run_home_5v5_xg real,
-            run_away_5v5_xg real)
+            run_away_5v5_xg real,
+            db_key integer primary key,
+            hd integer,
+            md integer,
+            ld integer)
 
     """
     )
@@ -146,7 +150,8 @@ def create_tables(cursor, connection):
         GA60 real,
         is_home int,
         season text,
-        session text
+        session text,
+        db_key text primary key
         )
     """
     )
@@ -180,6 +185,7 @@ def create_tables(cursor, connection):
         is_home int,
         season text,
         session text
+        db_key text primary key
         )
     """
     )
@@ -213,6 +219,7 @@ def create_tables(cursor, connection):
         is_home int,
         season text,
         session text
+        db_key text primary key
         )
     """
     )
@@ -247,6 +254,7 @@ def create_tables(cursor, connection):
         is_home int,
         season text,
         session text
+        db_key text primary key
         )
     """
     )
@@ -290,6 +298,7 @@ def create_tables(cursor, connection):
         game_date date,
         season text,
         session text
+        db_key text primary key
         )
     """
     )
@@ -332,6 +341,7 @@ def create_tables(cursor, connection):
         game_date date,
         season text,
         session text
+        db_key text primary key
         )
     """
     )
@@ -374,6 +384,7 @@ def create_tables(cursor, connection):
         game_date date,
         season text,
         session text
+        db_key text primary key
         )
     """
     )
@@ -416,6 +427,63 @@ def create_tables(cursor, connection):
         game_date date,
         season text,
         session text
+        db_key text primary key
+        )
+    """
+    )
+    cursor.execute("""
+    CREATE TABLE goaliestats(
+        goalie text,
+        game_id integer,
+        game_date date,
+        season text,
+        team text,
+        TOI real,
+        ca integer,
+        sa integer,
+        ga integer,
+        ldga integer,
+        mdga integer,
+        hdga integer,
+        lda integer,
+        mda integer,
+        hda integer,
+        sv_percent real,
+        fsv_percent real,
+        xfsv_percent real,
+        dfsv_percent real,
+        hdsv_percent real,
+        mdsv_percent real,
+        ldsv_percent real,
+        db_key text primary key
+        )
+    """
+    )
+    cursor.execute("""
+    CREATE TABLE goaliestats5v5(
+        goalie text,
+        game_id integer,
+        game_date date,
+        season text,
+        team text,
+        TOI real,
+        ca integer,
+        sa integer,
+        ga integer,
+        ldga integer,
+        mdga integer,
+        hdga integer,
+        lda integer,
+        mda integer,
+        hda integer,
+        sv_percent real,
+        fsv_percent real,
+        xfsv_percent real,
+        dfsv_percent real,
+        hdsv_percent real,
+        mdsv_percent real,
+        ldsv_percent real,
+        db_key text primary key
         )
     """
     )

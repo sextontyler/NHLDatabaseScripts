@@ -123,7 +123,8 @@ def main():
 
     tables = ['masternhlpbp', 'playerstats', 'teamstats', 'playerstats5v5',
               'teamstats5v5', 'playerstatsadj', 'teamstatsadj',
-              'playerstatsadj5v5', 'teamstatsadj5v5']
+              'playerstatsadj5v5', 'teamstatsadj5v5', 'goaliestats',
+              'goaliestats5v5']
     start = datetime.now()
     seasons = ['2015', '2016', '2017', '2018']
     for season in seasons:
