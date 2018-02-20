@@ -13,7 +13,7 @@ def drop_tables(cursor, connection):
     #List of tables in the NHL database
     tables = ['masternhlpbp', 'playerstats', 'teamstats', 'playerstats5v5',
             'teamstats5v5', 'playerstatsadj', 'teamstatsadj', 'playerstatsadj5v5',
-            'teamstatsadj5v5']
+            'teamstatsadj5v5', 'goaliestats', 'goaliestats5v5']
 
     for table in tables:
         try:
@@ -113,7 +113,7 @@ def create_tables(cursor, connection):
             run_away_xg real,
             run_home_5v5_xg real,
             run_away_5v5_xg real,
-            db_key integer primary key,
+            db_key text primary key,
             hd integer,
             md integer,
             ld integer)
@@ -184,7 +184,7 @@ def create_tables(cursor, connection):
         GA60 real,
         is_home int,
         season text,
-        session text
+        session text,
         db_key text primary key
         )
     """
@@ -218,7 +218,7 @@ def create_tables(cursor, connection):
         GA60 real,
         is_home int,
         season text,
-        session text
+        session text,
         db_key text primary key
         )
     """
@@ -253,7 +253,7 @@ def create_tables(cursor, connection):
         GA60 real,
         is_home int,
         season text,
-        session text
+        session text,
         db_key text primary key
         )
     """
@@ -297,7 +297,7 @@ def create_tables(cursor, connection):
         game_id text,
         game_date date,
         season text,
-        session text
+        session text,
         db_key text primary key
         )
     """
@@ -340,7 +340,7 @@ def create_tables(cursor, connection):
         game_id text,
         game_date date,
         season text,
-        session text
+        session text,
         db_key text primary key
         )
     """
@@ -383,7 +383,7 @@ def create_tables(cursor, connection):
         game_id text,
         game_date date,
         season text,
-        session text
+        session text,
         db_key text primary key
         )
     """
@@ -426,7 +426,7 @@ def create_tables(cursor, connection):
         game_id text,
         game_date date,
         season text,
-        session text
+        session text,
         db_key text primary key
         )
     """
@@ -439,7 +439,10 @@ def create_tables(cursor, connection):
         season text,
         team text,
         TOI real,
+        cf integer,
         ca integer,
+        fa integer,
+        xga real,
         sa integer,
         ga integer,
         ldga integer,
@@ -467,7 +470,10 @@ def create_tables(cursor, connection):
         season text,
         team text,
         TOI real,
+        cf integer,
         ca integer,
+        fa integer,
+        xga real,
         sa integer,
         ga integer,
         ldga integer,

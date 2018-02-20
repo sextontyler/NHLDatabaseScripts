@@ -90,6 +90,15 @@ def stats_sql_insert(cursor, connect, database, directory):
                                'CSV HEADER'.format(database))
                         cursor.copy_expert(sql, pbp)
                         connect.commit()
+                elif database == 'goaliestats' or database == 'goaliestats5v5':
+                    with open('{}/{}/{}'.format(path, dirs, database),
+                              'r', encoding="utf-8")\
+                                      as pbp:
+                        sql = ('COPY {} FROM stdin WITH DELIMITER \'|\''
+                               'CSV HEADER'.format(database))
+                        cursor.copy_expert(sql, pbp)
+                        connect.commit()
+
                 else:
                     with open('{}/{}/{} {}'.format(path, dirs, dirs, database),
                               'r', encoding="utf-8")\
@@ -102,6 +111,7 @@ def stats_sql_insert(cursor, connect, database, directory):
             except Exception as ex:
                 print(ex)
                 print('{} failed to insert'.format(dirs))
+                connect.rollback()
 
 
 def main():
