@@ -1,5 +1,6 @@
 import psycopg2
 
+
 def drop_tables(cursor, connection):
     '''
     Function to drop all tables in the NHL database to prepare for
@@ -10,20 +11,21 @@ def drop_tables(cursor, connection):
     Outputs:
     None
     '''
-    #List of tables in the NHL database
+    # List of tables in the NHL database
     tables = ['masternhlpbp', 'playerstats', 'teamstats', 'playerstats5v5',
-            'teamstats5v5', 'playerstatsadj', 'teamstatsadj', 'playerstatsadj5v5',
-            'teamstatsadj5v5', 'goaliestats', 'goaliestats5v5']
+              'teamstats5v5', 'playerstatsadj', 'teamstatsadj',
+              'playerstatsadj5v5', 'teamstatsadj5v5', 'goaliestats',
+              'goaliestats5v5']
 
     for table in tables:
         try:
             test = 'DROP TABLE IF EXISTS {};'.format(table)
             cursor.execute(test)
             connection.commit()
-        except:
+        except Exception as ex:
+            print(ex)
             print("{} does not exit".format(table))
             pass
-
 
 
 def create_tables(cursor, connection):
@@ -119,7 +121,7 @@ def create_tables(cursor, connection):
             ld integer)
 
     """
-    )
+)
 
     cursor.execute("""
     CREATE TABLE teamstats5v5(
@@ -495,7 +497,9 @@ def create_tables(cursor, connection):
     )
     connection.commit()
 
+
 def main():
+
     '''
     Function to drop all tables in the existing database and create new ones
     for insertion of stats to setup the database fresh
@@ -511,6 +515,6 @@ def main():
     create_tables(cursor, conn)
     conn.commit()
 
+
 if __name__ == '__main__':
     main()
-

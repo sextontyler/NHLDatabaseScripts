@@ -1,5 +1,6 @@
 import datetime
 import pandas as pd
+import os
 import sys
 import psycopg2
 
@@ -69,7 +70,7 @@ def main():
     walk_directory = sys.argv[1]
 
     # create postgresql connection
-    conn = psycopg2.connect("host=localhost dbname=nhl user=matt")
+    conn = psycopg2.connect(os.environ.get('CLOUD_DB_CONNECT'))
     cur = conn.cursor()
 
     tables = ['masternhlpbp', 'playerstats', 'teamstats', 'playerstats5v5',
