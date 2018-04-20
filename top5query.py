@@ -41,7 +41,7 @@ def main():
     sql_date = date.strftime('%Y-%m-%d')
 
     #opens connection to postgres db, executes query, and store query in a list
-    conn = psycopg2.connect("host=localhost dbname=nhl user=matt")
+    conn = psycopg2.connect(os.environ.get('CLOUD_DB_CONNECT'))
     cur = conn.cursor()
     top5_query = "SELECT event_player_1, event_team, ROUND(sum(xg)::numeric, 2) AS ixG FROM\
      masternhlpbp WHERE game_date = '{}' AND season = '20172018' GROUP BY event_player_1, event_team\
