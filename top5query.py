@@ -2,6 +2,7 @@ import psycopg2
 import pandas as pd
 import datetime
 import sys
+import os
 
 def write_top5(top5_file, sql_query, date):
     '''
